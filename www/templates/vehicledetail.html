@@ -1,0 +1,21 @@
+<ion-view>
+    <ion-content overflow-scroll="true" padding="true" class="has-header has-footer">
+        <div>
+            <div class="col"><h3>Vehicle information</h3></div>
+            <div class="col"></div>
+        </div>
+        <div class="row" ng-repeat="vehicle_col in vehicledetail">
+            <script>console.log("vehicle info");</script>
+            <div class="col">{{vehicle_col.keyfield}}</div>
+            <div class="col">{{vehicle_col.valuefield}}</div>
+        </div>
+        <div ng-if="v_rentaldone === 1">
+            <div class="col"><h3>Rental information</h3></div>
+            <div class="col"></div>
+        </div>
+        <div class="row" ng-if="v_rentaldone === 1" ng-repeat="v_row in rentaldetail">
+            <div class="col">{{v_row.keyfield}}</div>
+            <div class="col">{{v_row.valuefield}}</div>
+        </div>
+    </ion-content>
+</ion-view>

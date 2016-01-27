@@ -1,0 +1,14 @@
+<ion-view>
+    <ion-content overflow-scroll="true" padding="true" class="has-header has-footer">
+        <ion-list>
+            <ion-item><h1 class="title">Vehicles</h1></ion-item>
+            <label class="item item-input" name="v_vehicles_search">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="search" placeholder="">
+            </label>
+            <ion-item ng-repeat="vehicle in vehicles track by $index" ng-click="getVehicleDetail({{vehicle.record_id}})">
+                <p>{{vehicle.vehicle_name}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

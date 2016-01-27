@@ -1,0 +1,18 @@
+<ion-view>
+    <ion-content overflow-scroll="true" padding="true" class="has-header has-footer">
+        <form class="list" ng-submit="validateLogin(v_credentials)">
+            <ion-list>
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input type="text" placeholder="" ng-model="v_credentials.username">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="password" placeholder="" ng-model="v_credentials.password">
+                </label>
+            </ion-list>
+            <div class="spacer" style="height: 40px;"></div>
+            <button class="button button-stable button-block icon ion-log-in ">Log in</button>
+        </form>
+    </ion-content>
+</ion-view>
