@@ -76,7 +76,7 @@ angular.module('app.controllers', ['ionic', 'app.services', 'ui.router'])
     
     $scope.getVehicleDetail = function(x_record_id) {
         $localstorage.set('vehicle_record_id', x_record_id);
-        $state.go('vehicledetail');
+        $state.go('vehicledetail', {reload: true, inherit: false});
     }
 })
 
@@ -97,6 +97,7 @@ angular.module('app.controllers', ['ionic', 'app.services', 'ui.router'])
         $scope.v_rentaldone = 0;
         $http(v_req).
         success(function(data, status, headers, config) {
+            console.log(data);
             angular.forEach(data, function(value, key) {
                 if (key === 'Operational')
                     v_index = 1;
@@ -105,9 +106,12 @@ angular.module('app.controllers', ['ionic', 'app.services', 'ui.router'])
                 if ((key != 'Record ID') && (key != 'Operational') && (key != 'Rental')) {
                      if (v_index === 1)
                         $scope.vehicledetail.push({keyfield:key, valuefield:value});
+                        if (key === 'Vehicle name') {
+                            $localstorage.set('vehicle_name', value);
+                        } else if (key === 'Hour meter') {
+                            $localstorage.set('hour_meter', value);
+                        }
                      else {
-//                         if ($scope.v_rentaldone === 0)
-//                             $scope.rentaldetail.push({keyfield:'<h2>Rental information</h2>', valuefield:''});
                          $scope.v_rentaldone = 1;
                          $scope.rentaldetail.push({keyfield:key, valuefield:value});
                     }
@@ -120,5 +124,106 @@ angular.module('app.controllers', ['ionic', 'app.services', 'ui.router'])
     }
 
     $timeout($scope.init);
+    
+    $scope.doService = function() {
+        $state.go('recordservice',{}, {reload: true, inherit: false});
+    }
+    
+    $scope.doHourMeter = function() {
+        $state.go('hourmeter',{}, {reload: true, inherit: false});
+    }
+    
+    $scope.doTap = function() {
+        $state.go('vehicles', {}, {reload: true, inherit: false});
+    }
+})
+
+.controller('recordserviceCtrl', function($scope, $http, $localstorage, $timeout, $state, $filter) {
+    $scope.init = function() {
+        $scope.v_record_id = $localstorage.get('vehicle_record_id');
+        $scope.v_vehicle_name = $localstorage.get('vehicle_name');
+    }
+    $timeout($scope.init);
+    
+    $scope.validateservice = function(v_service) {
+        v_record_id = $localstorage.get('vehicle_record_id');
+        v_svcdate = $filter('date')(v_service.x_servicedate, "yyyy-MM-dd");
+        myobject = {x_guid:$localstorage.get('app_key'), 
+                    x_record_id:v_record_id,
+                    x_servicedate:v_svcdate};
+
+        Object.toparams = function ObjecttoParams(obj) 
+        {
+          var p = [];
+          for (var key in obj) 
+          {
+            p.push(key + '=' + encodeURIComponent(obj[key]));
+          }
+          return p.join('&');
+        };
+        v_req =
+        {
+            method: 'POST',
+            url: "http://demo.remotehourmeter.com/crm/saveservice",
+            data: Object.toparams(myobject),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }
+        $http(v_req).
+        success(function(data, status, headers, config) {
+            $state.go('vehicles', {}, {reload: true, inherit: false});
+        })
+        .error(function(data, status, headers, config) {
+                    $state.go('vehicles', {}, {reload: true, inherit: false});
+        });
+    }
+    
+    $scope.doTap = function() {
+        $state.go('vehicles', {}, {reload: true, inherit: false});
+    }
+})
+
+.controller('hourmeterCtrl', function($scope, $http, $localstorage, $timeout, $state, $filter) {
+    $scope.init = function() {
+        $scope.v_record_id = $localstorage.get('vehicle_record_id');
+        $scope.v_vehicle_name = $localstorage.get('vehicle_name');
+        $scope.v_hour_meter = $localstorage.get('hour_meter');
+    }
+    $timeout($scope.init);
+    
+    $scope.validatehourmeter = function(v_hmchange) {
+        v_record_id = $localstorage.get('vehicle_record_id');
+        myobject = {x_guid:$localstorage.get('app_key'), 
+                    x_record_id:v_record_id,
+                    x_hourmeter:v_hmchange.x_hour_meter};
+
+        Object.toparams = function ObjecttoParams(obj) 
+        {
+          var p = [];
+          for (var key in obj) 
+          {
+            p.push(key + '=' + encodeURIComponent(obj[key]));
+          }
+          return p.join('&');
+        };
+        v_req =
+        {
+            method: 'POST',
+            url: "http://demo.remotehourmeter.com/crm/savehourmeter",
+            data: Object.toparams(myobject),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }
+        $http(v_req).
+        success(function(data, status, headers, config) {
+            console.log('success:' + data);
+            $state.go('vehicles', {}, {reload: true, inherit: false});
+        })
+        .error(function(data, status, headers, config) {
+            console.log('error:' + data);
+            $state.go('vehicles', {}, {reload: true, inherit: false});
+        });
+    }
+    $scope.doTap = function() {
+        $state.go('vehicles', {}, {reload: true, inherit: false});
+    }
 })
  

@@ -31,6 +31,18 @@ angular.module('app.routes', [])
       templateUrl: 'templates/vehicledetail.html',
       controller: 'vehicledetailCtrl'
     })
+    
+    .state('recordservice', {
+        url: '/recordservice',
+        templateUrl: 'templates/recordservice.html',
+        controller: 'recordserviceCtrl'
+    })
+    
+    .state('hourmeter', {
+        url: '/hourmeter',
+        templateUrl: 'templates/hourmeter.html',
+        controller: 'hourmeterCtrl'
+    })
       
     ;
 
